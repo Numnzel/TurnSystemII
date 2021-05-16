@@ -37,3 +37,6 @@
 
 # Debugging files
 Debug/
+
+# Compiled files
+x64/
