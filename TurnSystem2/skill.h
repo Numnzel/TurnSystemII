@@ -1,15 +1,20 @@
 #pragma once
 #include <string>
+#include <iostream>
 
 class skill {
     
-    private:
-        std::string name = "aaa";
+    public:
+        std::string name = "undefined";
         short damage = 1;
         
     public:
-        bool operator<(const skill& rhs) const;
         skill (std::string skname, short skdamage);
-        std::string getName ();
         short getDamage ();
+        bool operator<(const skill& rhs) const;
+
+    private:
+        friend std::ostream& operator<<(std::ostream& os, const skill& lhs) noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const skill& lhs) noexcept;

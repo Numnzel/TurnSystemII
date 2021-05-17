@@ -1,11 +1,12 @@
 #include "unit.h"
 
-    unit::unit () {
-        //skills = new skillList();
-        //cout << "Created unit";
-        skillList.insert(skill("attack", 100));   //.add(new skill("attack", 100));
-        skillList.insert(skill("attack2", 100));
-        skillList.insert(skill("attack3", 100));
+    unit::unit (std::string name) {
+
+        this->name = name;
+
+        skillList.insert(skill("attack", 100));
+        skillList.insert(skill("dodge", 100));
+        skillList.insert(skill("guard", 100));
     }
 
     void unit::setCounter (int counter) {
@@ -20,12 +21,12 @@
         health = sp;
     }
 
-    void unit::doTurn () {
-        //turn = true;
+    std::string unit::getName() {
+        return name;
     }
 
-    void unit::endTurn () {
-        //turn = false;
+    std::set<skill> unit::getSkills() {
+        return skillList;
     }
 
     short unit::getSpeed () {
@@ -40,12 +41,12 @@
         return turntime;
     }
 
-    /*skill unit::getSkill(skill s) {
-        return skillList.find(s);
-    }*/
+    void unit::doTurn() {
+        //turn = true;
+    }
 
-    std::set<skill> unit::getSkills () {
-        return skillList;
+    void unit::endTurn() {
+        //turn = false;
     }
 
     bool unit::checkTurn () {

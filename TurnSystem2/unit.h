@@ -1,8 +1,10 @@
 #include <set>
+#include <string>
 #include "skill.h"
 
 class unit {
 
+    std::string name = "undefined";
     short speed = 0;
     short maxtime = 0;
     short turntime = 0;
@@ -11,16 +13,16 @@ class unit {
     bool turn = false;
 
 	public:
-		unit ();
+		unit (std::string name);
         void setCounter (int counter);
         void setSpeed (short sp);
         void setHealth (short sp);
+        std::string getName();
+        std::set<skill> getSkills();
+        short getSpeed();
+        short getHealth();
+        short getPos();
         void doTurn ();
         void endTurn ();
-        short getSpeed ();
-        short getHealth ();
-        short getPos ();
-        //skill getSkill (skill s);
-        std::set<skill> getSkills();
         bool checkTurn ();
 };

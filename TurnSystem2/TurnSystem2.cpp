@@ -3,6 +3,7 @@
 #include <limits>
 #include <math.h>
 #include <list>
+#include <vector>
 
 #include "skill.h"
 #include "unit.h"
@@ -11,11 +12,11 @@
 
 using namespace std;
 
-short setunitsamount() {
+short setUnitsAmount() {
 
     short n;
-    cout << "Enter the number of units:\n";
-    cin >> n;
+    std::cout << "Enter the number of units:\n";
+    std::cin >> n;
 
     while (!std::cin.good() || n <= 0 || n > 10) {
 
@@ -29,7 +30,7 @@ short setunitsamount() {
     return n;
 }
 
-void setupunits(unit* units, short n) {
+void setupUnits(unit* units, short n) {
 
     for (short i = 0; i < n; i++) {
 
@@ -65,7 +66,7 @@ void setupunits(unit* units, short n) {
     }
 }
 
-bool gamelogic(short time, unit* units, short n) {
+bool gameLogic(short time, unit* units, short n) {
 
     short gtime = time + 1;
     std::string input;
@@ -82,10 +83,12 @@ bool gamelogic(short time, unit* units, short n) {
 
             std::cout << "Skills: ";
 
-            //std::set<skill> ski = units[i].getSkills();
-            //for (short s = 0; s < units[i].getSkillsN(); s++) {
-            //    skillList = skillList + units[i].getSkill(s).getName() + "\n";
-            //}
+            std::set<skill> skills = units[i].getSkills();
+
+            std::set<skill>::iterator it;
+            for (it = skills.begin(); it != skills.end(); it++) {
+                std::cout << *it << " ";
+            }
 
             //cout << skillList;
 
@@ -105,12 +108,26 @@ int main() {
 
 Start:
 
-    // Create units
-    short unit_n = setunitsamount();
-    unit* units = new unit[unit_n];
+    std::cout << "-- Initiating game --\n";
 
+    // Create units
+    
+    short unit_n = setUnitsAmount();
+
+    std::vector<unit> units;
+    units.reserve(unit_n);
+
+    for (short i = 0; i < unit_n; i++) {
+        
+        std::string n;
+        std::cout << "Enter the name of unit " << i << ": ";
+        std::cin >> n;
+
+        units.push_back(unit(n));
+    }
+    
     // Setup units stats
-    setupunits(units, unit_n);
+    setupUnits(units.data(), unit_n);
 
     // Start game
     short time = 0;
@@ -119,7 +136,7 @@ Start:
     for (short i = 0; i < unit_n; i++)
         units[i].setCounter(TIMECOUNTER);
 
-    std::cout << "-- Starting game --\n";
+    std::cout << "-- Starting combat --\n";
     std::cout << "INFO: Press ENTER to end the turn.\n";
     std::cin.ignore();
 
@@ -127,7 +144,7 @@ Start:
 
         bool state;
 
-        state = gamelogic(time, units, unit_n);
+        state = gameLogic(time, units.data(), unit_n);
 
         if (state)
             break;
@@ -135,6 +152,8 @@ Start:
         if (++time > TIMECOUNTER)
             time = 0;
     }
+
+    std::cout << "-- Combat ended --\n";
 
     //delete units;
 
