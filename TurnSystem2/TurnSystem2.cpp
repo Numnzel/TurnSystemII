@@ -77,20 +77,34 @@ bool gameLogic(short time, unit* units, short n) {
         // Check turn order
         if (units[i].checkTurn()) {
 
-            std::cout << "(Time: " << gtime << ") Unit " << i << " turn\n";
-            //cout << "\nPress enter to end turn";
-            //cin >> input;
+            std::string unitName = units[i].getName();
 
-            std::cout << "Skills: ";
+            std::cout << "(Time: " << gtime << ") Unit " << unitName << " turn. Use a skill: ";
 
+            // Get and print available skills
             std::set<skill> skills = units[i].getSkills();
 
             std::set<skill>::iterator it;
-            for (it = skills.begin(); it != skills.end(); it++) {
+            for (it = skills.begin(); it != skills.end(); it++)
                 std::cout << *it << " ";
-            }
 
-            //cout << skillList;
+            // Wait for player to write a skill
+            bool skillMatches = false;
+            std::string use;
+
+            do {
+                std::cin >> use;
+
+                // Search the skill and assign it if exists
+                for (it = skills.begin(); it != skills.end(); it++)
+                    if (use == (*it).name) {
+                        skillMatches = true;
+                        break;
+                    }
+                
+            } while (!skillMatches);
+
+            std::cout << unitName << " used the skill " << use << "\n";
 
             std::cin.ignore();
 

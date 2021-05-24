@@ -12,6 +12,7 @@ class skill {
         skill (std::string skname, short skdamage);
         short getDamage ();
         bool operator<(const skill& rhs) const;
+        bool operator==(const std::string rhs) const;
 
     private:
         friend std::ostream& operator<<(std::ostream& os, const skill& lhs) noexcept;

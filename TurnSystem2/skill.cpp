@@ -19,6 +19,14 @@ bool skill::operator<(const skill& rhs) const {
     return false;
 }
 
+bool skill::operator==(const std::string rhs) const {
+
+    if (this->name == rhs)
+        return true;
+
+    return false;
+}
+
 std::ostream& operator<<(std::ostream& os, const skill& lhs) noexcept {
     
     os << lhs.name;
