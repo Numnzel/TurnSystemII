@@ -1,21 +1,24 @@
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 #include <string>
 #include <iostream>
 #include <limits>
 #include <math.h>
+
 #include <list>
 #include <vector>
+#include <map>
 
 #include "skill.h"
 #include "unit.h"
 
 #define TIMECOUNTER 255
 
-using namespace std;
-
-short setUnitsAmount() {
+short setUnitsAmount () {
 
     short n;
-    std::cout << "Enter the number of units:\n";
+    std::cout << "Enter the number of units: ";
     std::cin >> n;
 
     while (!std::cin.good() || n <= 0 || n > 10) {
@@ -30,13 +33,14 @@ short setUnitsAmount() {
     return n;
 }
 
-void setupUnits(unit* units, short n) {
+void setupUnits (unit* units, short n) {
 
     for (short i = 0; i < n; i++) {
 
         short sp;
+        std::string unitName = units[i].getName();
 
-        std::cout << "Enter unit " << i << " speed:\n";
+        std::cout << "Enter unit " << unitName << " speed: ";
         std::cin >> sp;
 
         while (!std::cin.good() || sp <= 0 || sp > 255) {
@@ -44,13 +48,13 @@ void setupUnits(unit* units, short n) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            std::cout << "Enter unit " << i << " speed: (Warning: Only integers between 1 and 255 allowed)\n";
+            std::cout << "Enter unit " << unitName << " speed: (Warning: Only integers between 1 and 255 allowed)\n";
             std::cin >> sp;
         }
 
         units[i].setSpeed(sp);
 
-        std::cout << "Enter unit " << i << " health:\n";
+        std::cout << "Enter unit " << unitName << " health: ";
         std::cin >> sp;
 
         while (!std::cin.good() || sp <= 0 || sp > 255) {
@@ -58,7 +62,7 @@ void setupUnits(unit* units, short n) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            std::cout << "Enter unit " << i << " health: (Warning: Only integers between 1 and 255 allowed)\n";
+            std::cout << "Enter unit " << unitName << " health: (Warning: Only integers between 1 and 255 allowed)\n";
             std::cin >> sp;
         }
 
@@ -66,7 +70,7 @@ void setupUnits(unit* units, short n) {
     }
 }
 
-bool gameLogic(short time, unit* units, short n) {
+bool gameLogic (short time, unit* units, short n) {
 
     short gtime = time + 1;
     std::string input;
@@ -116,61 +120,81 @@ bool gameLogic(short time, unit* units, short n) {
     return false;
 }
 
-int main() {
+int main () {
 
     std::cout << "Welcome to Numnzel's turn-based system.\n";
+    std::cout << "----- Initiating game -----\n";
 
-Start:
+    // Create skill register
+    std::map <std::string, skill> memSkills;
 
-    std::cout << "-- Initiating game --\n";
+    // Store skill list in register
+    std::ifstream i("skillList.json");
+    nlohmann::json j;
+    i >> j;
 
-    // Create units
-    
-    short unit_n = setUnitsAmount();
+    for (const auto& item : j.items()) {
 
-    std::vector<unit> units;
-    units.reserve(unit_n);
-
-    for (short i = 0; i < unit_n; i++) {
-        
-        std::string n;
-        std::cout << "Enter the name of unit " << i << ": ";
-        std::cin >> n;
-
-        units.push_back(unit(n));
+        std::cout << item.key() << "\n";
+        for (const auto& val : item.value().items())
+            memSkills.insert(std::pair<std::string, skill>(val.value()["name"], skill(val.value()["name"], val.value()["damage"])));
     }
-    
-    // Setup units stats
-    setupUnits(units.data(), unit_n);
 
-    // Start game
-    short time = 0;
-
-    // Setup units counters
-    for (short i = 0; i < unit_n; i++)
-        units[i].setCounter(TIMECOUNTER);
-
-    std::cout << "-- Starting combat --\n";
-    std::cout << "INFO: Press ENTER to end the turn.\n";
-    std::cin.ignore();
+    // Print skill list from register (debugging)
+    std::map<std::string, skill>::iterator it;
+    for (it = memSkills.begin(); it != memSkills.end(); it++)
+        std::cout << ':' << it->second.name << std::endl;
 
     while (true) {
 
-        bool state;
+        std::cout << "----- Initiating combat -----\n";
 
-        state = gameLogic(time, units.data(), unit_n);
+        // Create units
+        short unit_n = setUnitsAmount();
 
-        if (state)
-            break;
+        std::vector<unit> units;
+        units.reserve(unit_n);
 
-        if (++time > TIMECOUNTER)
-            time = 0;
+        for (short i = 0; i < unit_n; i++) {
+
+            std::string n;
+            std::cout << "Enter the name of unit " << i << ": ";
+            std::cin >> n;
+
+            units.push_back(unit(n));
+        }
+
+        // Setup units stats
+        setupUnits(units.data(), unit_n);
+
+        // Start game
+        short time = 0;
+
+        // Setup units counters
+        for (short i = 0; i < unit_n; i++)
+            units[i].setCounter(TIMECOUNTER);
+
+        std::cout << "----- Starting combat -----\n";
+        std::cout << "INFO: Press ENTER to end the turn.\n";
+        std::cin.ignore();
+
+        while (true) {
+
+            bool state;
+
+            state = gameLogic(time, units.data(), unit_n);
+
+            if (state)
+                break;
+
+            if (++time > TIMECOUNTER)
+                time = 0;
+        }
+
+        std::cout << "----- Combat ended -----\n";
+
+        //delete units;
+
     }
-
-    std::cout << "-- Combat ended --\n";
-
-    //delete units;
-
-    goto Start;
 }
 
