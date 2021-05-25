@@ -1,19 +1,19 @@
 {
   "skillList": [
     {
-      "id": 0,
+      "id": "idattack",
       "name": "attack",
       "damage": 100,
       "description": "attack an enemy"
     },
     {
-      "id": 1,
+      "id": "idguard",
       "name": "guard",
       "damage": 100,
       "description": "halves damage"
     },
     {
-      "id": 2,
+      "id": "iddodge",
       "name": "dodge",
       "damage": 100,
       "description": "try to avoid attack"

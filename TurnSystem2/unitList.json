@@ -1,0 +1,25 @@
+{
+  "unitList": [
+    {
+      "id": "id_unit_knight",
+      "name": "Knight",
+      "health": 100,
+      "speed": 100,
+      "description": "Dragon slayer knight"
+    },
+    {
+      "id": "id_unit_dragon",
+      "name": "Dragon",
+      "health": 100,
+      "speed": 100,
+      "description": "Legendary dragon"
+    },
+    {
+      "id": "id_unit_ghost",
+      "name": "Ghost",
+      "health": 100,
+      "speed": 100,
+      "description": "Old castle ghost"
+    }
+  ]
+}

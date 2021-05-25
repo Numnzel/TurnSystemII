@@ -24,6 +24,9 @@
     <ClCompile Include="unit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UnitBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unit.h">
@@ -32,9 +35,15 @@
     <ClInclude Include="skill.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="UnitBuilder.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="skillList.json">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="unitList.json">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

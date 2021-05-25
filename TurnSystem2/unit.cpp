@@ -1,55 +1,68 @@
 #include "unit.h"
 
-    unit::unit (std::string name) {
+    Unit::Unit (std::string id) {
 
-        this->name = name;
-
-        skillList.insert(skill("attack", 100));
-        skillList.insert(skill("dodge", 100));
-        skillList.insert(skill("guard", 100));
+        this->id = id;
     }
 
-    void unit::setCounter (int counter) {
+    void Unit::addSkill (skill skill) {
+
+        unitSkills.insert(skill);
+    }
+
+    void Unit::setCounter (int counter) {
         maxtime = counter;
     }
 
-    void unit::setSpeed (short sp) {
-        speed = sp;
+    void Unit::setName (std::string data) {
+        name = data;
     }
 
-    void unit::setHealth (short sp) {
-        health = sp;
+    void Unit::setHealth (short data) {
+        health = data;
     }
 
-    std::string unit::getName() {
+    void Unit::setSpeed (short data) {
+        speed = data;
+    }
+
+    void Unit::setDescription (std::string data) {
+        description = data;
+    }
+
+    std::string Unit::getName () {
         return name;
     }
 
-    std::set<skill> unit::getSkills() {
-        return skillList;
+    std::set<skill> Unit::getSkills () {
+        return unitSkills;
     }
 
-    short unit::getSpeed () {
-        return speed;
-    }
-
-    short unit::getHealth () {
+    short Unit::getHealth () {
         return health;
     }
 
-    short unit::getPos () {
+    short Unit::getSpeed () {
+        return speed;
+    }
+
+    std::string Unit::getDescription () {
+        return description;
+    }
+
+    short Unit::getPos () {
         return turntime;
     }
 
-    void unit::doTurn() {
+    void Unit::doTurn () {
         //turn = true;
     }
 
-    void unit::endTurn() {
+    void Unit::endTurn () {
         //turn = false;
     }
 
-    bool unit::checkTurn () {
+    bool Unit::checkTurn () {
         
         turntime += speed;
 

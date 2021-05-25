@@ -1,27 +1,36 @@
+#pragma once
 #include <set>
 #include <string>
 #include "skill.h"
 
-class unit {
+class Unit {
 
-    std::string name = "undefined";
-    short speed = 0;
-    short maxtime = 0;
-    short turntime = 0;
-    short health = 0;
-    std::set<skill> skillList;
-    bool turn = false;
+    private:
+        std::string id;
+        std::string name = "undefined";
+        short health = 0;
+        short speed = 0;
+        std::string description = "undefined";
+        short maxtime = 0;
+        short turntime = 0;
+
+        std::set<skill> unitSkills;
+        bool turn = false;
 
 	public:
-		unit (std::string name);
+		Unit (std::string id);
         void setCounter (int counter);
-        void setSpeed (short sp);
-        void setHealth (short sp);
-        std::string getName();
-        std::set<skill> getSkills();
-        short getSpeed();
-        short getHealth();
-        short getPos();
+        void setName (std::string data);
+        void setHealth (short data);
+        void setSpeed (short data);
+        void setDescription (std::string data);
+        std::string getName ();
+        std::set<skill> getSkills ();
+        short getHealth ();
+        short getSpeed ();
+        std::string getDescription ();
+        short getPos ();
+        void addSkill (skill skill);
         void doTurn ();
         void endTurn ();
         bool checkTurn ();

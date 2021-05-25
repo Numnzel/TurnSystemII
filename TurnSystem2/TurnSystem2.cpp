@@ -12,6 +12,7 @@
 
 #include "skill.h"
 #include "unit.h"
+#include "UnitBuilder.h"
 
 #define TIMECOUNTER 255
 
@@ -33,44 +34,7 @@ short setUnitsAmount () {
     return n;
 }
 
-void setupUnits (unit* units, short n) {
-
-    for (short i = 0; i < n; i++) {
-
-        short sp;
-        std::string unitName = units[i].getName();
-
-        std::cout << "Enter unit " << unitName << " speed: ";
-        std::cin >> sp;
-
-        while (!std::cin.good() || sp <= 0 || sp > 255) {
-
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            std::cout << "Enter unit " << unitName << " speed: (Warning: Only integers between 1 and 255 allowed)\n";
-            std::cin >> sp;
-        }
-
-        units[i].setSpeed(sp);
-
-        std::cout << "Enter unit " << unitName << " health: ";
-        std::cin >> sp;
-
-        while (!std::cin.good() || sp <= 0 || sp > 255) {
-
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            std::cout << "Enter unit " << unitName << " health: (Warning: Only integers between 1 and 255 allowed)\n";
-            std::cin >> sp;
-        }
-
-        units[i].setHealth(sp);
-    }
-}
-
-bool gameLogic (short time, unit* units, short n) {
+bool combatLogic (short time, Unit* units, short n) {
 
     short gtime = time + 1;
     std::string input;
@@ -120,6 +84,69 @@ bool gameLogic (short time, unit* units, short n) {
     return false;
 }
 
+void gameLogic(std::map <std::string, skill> memSkills) {
+
+    std::cout << "----- Initiating combat -----\n";
+
+    // Get unit amounts
+    short unit_n = setUnitsAmount();
+
+    // Assign unit types
+    std::vector<Unit> units;
+    units.reserve(unit_n);
+
+    for (short i = 0; i < unit_n; i++) {
+
+        std::string name;
+        bool unitMatches = false;
+
+        do {
+            std::cout << "Select the unit type for unit " << i << ":\n";
+            std::cout << UnitBuilder::print() << "\n";
+            std::cin >> name;
+
+            unitMatches = UnitBuilder::checkUnit(name);
+
+        } while (!unitMatches);
+
+        Unit k = *UnitBuilder::getUnit(name);
+
+        k.addSkill(memSkills.find("idattack")->second);
+        k.addSkill(memSkills.find("idguard")->second);
+        k.addSkill(memSkills.find("iddodge")->second);
+
+        units.push_back(k);
+    }
+
+    // Start game
+    short time = 0;
+
+    // Setup units counters
+    for (short i = 0; i < unit_n; i++)
+        units[i].setCounter(TIMECOUNTER);
+
+    std::cout << "----- Starting combat -----\n";
+    std::cout << "INFO: Press ENTER to end the turn.\n";
+    std::cin.ignore();
+
+    while (true) {
+
+        bool state;
+
+        state = combatLogic(time, units.data(), unit_n);
+
+        if (state)
+            break;
+
+        if (++time > TIMECOUNTER)
+            time = 0;
+    }
+
+    std::cout << "----- Combat ended -----\n";
+
+    //delete units;
+}
+
 int main () {
 
     std::cout << "Welcome to Numnzel's turn-based system.\n";
@@ -133,68 +160,27 @@ int main () {
     nlohmann::json j;
     i >> j;
 
-    for (const auto& item : j.items()) {
-
-        std::cout << item.key() << "\n";
+    // Fill skill register
+    for (const auto& item : j.items())
         for (const auto& val : item.value().items())
-            memSkills.insert(std::pair<std::string, skill>(val.value()["name"], skill(val.value()["name"], val.value()["damage"])));
-    }
+            memSkills.insert(std::pair<std::string, skill>(val.value()["id"], skill(val.value()["name"], val.value()["damage"])));
 
     // Print skill list from register (debugging)
+    /*
     std::map<std::string, skill>::iterator it;
     for (it = memSkills.begin(); it != memSkills.end(); it++)
         std::cout << ':' << it->second.name << std::endl;
+    */
+    
+    // Create unit register
+    UnitBuilder::initialize("unitList.json");
+    
+    // Print unit register (debugging)
+    //std::cout << UnitBuilder::print();
 
     while (true) {
 
-        std::cout << "----- Initiating combat -----\n";
-
-        // Create units
-        short unit_n = setUnitsAmount();
-
-        std::vector<unit> units;
-        units.reserve(unit_n);
-
-        for (short i = 0; i < unit_n; i++) {
-
-            std::string n;
-            std::cout << "Enter the name of unit " << i << ": ";
-            std::cin >> n;
-
-            units.push_back(unit(n));
-        }
-
-        // Setup units stats
-        setupUnits(units.data(), unit_n);
-
-        // Start game
-        short time = 0;
-
-        // Setup units counters
-        for (short i = 0; i < unit_n; i++)
-            units[i].setCounter(TIMECOUNTER);
-
-        std::cout << "----- Starting combat -----\n";
-        std::cout << "INFO: Press ENTER to end the turn.\n";
-        std::cin.ignore();
-
-        while (true) {
-
-            bool state;
-
-            state = gameLogic(time, units.data(), unit_n);
-
-            if (state)
-                break;
-
-            if (++time > TIMECOUNTER)
-                time = 0;
-        }
-
-        std::cout << "----- Combat ended -----\n";
-
-        //delete units;
-
+        gameLogic (memSkills);
     }
 }
 
