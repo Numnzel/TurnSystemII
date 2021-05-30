@@ -17,7 +17,7 @@
 
                 Unit tempUnit = Unit(val.value()["id"]);
                 tempUnit.setName(val.value()["name"]);
-                tempUnit.setHealth(val.value()["health"]);
+                tempUnit.setMaxHealth(val.value()["health"]);
                 tempUnit.setSpeed(val.value()["speed"]);
                 tempUnit.setDescription(val.value()["description"]);
 
@@ -32,7 +32,7 @@
         std::map<std::string, Unit>::iterator it;
         for (it = memUnits.begin(); it != memUnits.end(); it++)
             str += it->second.getName() + ":"
-                + std::to_string(it->second.getHealth()) + ":"
+                + std::to_string(it->second.getMaxHealth()) + ":"
                 + std::to_string(it->second.getSpeed()) + ":"
                 + it->second.getDescription() + ":"
                 + "\n";

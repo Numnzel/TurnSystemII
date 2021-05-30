@@ -8,10 +8,12 @@ class Unit {
     private:
         std::string id;
         std::string name = "undefined";
-        short health = 0;
-        short speed = 0;
+        unsigned int maxHealth = 0;
+        unsigned int health = 0;
+        unsigned short status = 0;
+        unsigned short speed = 0;
         std::string description = "undefined";
-        short maxtime = 0;
+        unsigned short maxtime = 0;
         short turntime = 0;
 
         std::set<skill> unitSkills;
@@ -19,17 +21,20 @@ class Unit {
 
 	public:
 		Unit (std::string id);
-        void setCounter (int counter);
-        void setName (std::string data);
-        void setHealth (short data);
-        void setSpeed (short data);
+        void setCounter (unsigned int counter);
+        void setName (std::string value);
+        void setHealth (unsigned int value);
+        void setMaxHealth (unsigned int value);
+        void setSpeed (unsigned short value);
         void setDescription (std::string data);
         std::string getName ();
         std::set<skill> getSkills ();
-        short getHealth ();
-        short getSpeed ();
+        unsigned int getHealth ();
+        unsigned int getMaxHealth ();
+        unsigned short getSpeed ();
         std::string getDescription ();
         short getPos ();
+        int damageUnit (int damage);
         void addSkill (skill skill);
         void doTurn ();
         void endTurn ();

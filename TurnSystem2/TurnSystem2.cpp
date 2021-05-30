@@ -84,7 +84,7 @@ bool combatLogic (short time, Unit* units, short n) {
     return false;
 }
 
-void gameLogic(std::map <std::string, skill> memSkills) {
+void gameLogic (std::map <std::string, skill> memSkills) {
 
     std::cout << "----- Initiating combat -----\n";
 
